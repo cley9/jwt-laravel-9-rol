@@ -74,6 +74,13 @@ class loginController extends Controller
 
     }
     function logoutUser(){
+
+
+        auth()->logout();
+
+        return response()->json(['message' => 'Successfully logged out']);
+
+
         // Auth()->logout(true);
         // auth()->logout();
     // auth()->refresh();
