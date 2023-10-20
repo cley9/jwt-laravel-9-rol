@@ -17,18 +17,17 @@ class loginController extends Controller
         $userCreate->rol=$request->rol;
         $userCreate->password=bcrypt($request->password);
         // $userCreate->token=$token=JWTAuth::fromUser($userCreate);
-       $userCreate->save();
-    // $userCreate=User::create([
-    //    'name'=>$request->name,
-    //    'email'=>$request->email,
-    //    'password'=>bcrypt($request->password),
-        // $token=
-        $token=JWTAuth::fromUser($userCreate);
-
-    // ]);
-        return response()->json(['response'=>'ok','data'=>$userCreate->name,$token]);
-        // return response()->json(['response'=>'ok',$token]);
-// return $token;
+            try { //manega los status 500
+                $userCreate->save();
+                $token=JWTAuth::fromUser($userCreate);
+                if ($token) {
+                        return response()->json(['mensaje'=>'usuario creado','nombre'=>$userCreate->name, 'token'=>$token]);
+                    } else {
+                            return response()->json(['mensaje'=>'usuario no creado','nombre'=>$userCreate->name, 'token'=>$token]);
+                        }
+        } catch (\Throwable $th) {
+            return response()->json(['mensaje'=>'error no se creo el usuario']);
+        }
     }
     public function loginUser(Request $request)
     {
@@ -39,30 +38,35 @@ class loginController extends Controller
             // 'email'=>$email,
             // 'password'=>$password
           ];
-        //   if (Auth::attempt($credencials)) {
-            if ($token=JWTAuth::attempt($credencials)) {
-            //   session(['email'=>$email]);
-            //   session(['rol'=>'4']);
-              // return view('admin.home');
-            //   $userRol=Auth::attempt($credencials);
-            // $userRol=User::get();
-            // $userRol=User::where('email',$request->email,'password',$request->password)->get()->where('password',$request->password)->get();
-            $userRol=User::where('email',$request->email)->get();
-            foreach($userRol as $key){
-                // return
-                 $key->rol;
-            }
-            // where('password',$request->password)->get();
-            // $userRol= DB::table('users')
-            // ->where('email',$request->email)
-            // ->orWhere(function($query) {
-            //     $query->where('email',$request->email)
-            //           ->where('password',$request->password);
-            // })
-            // ->get();
-              return response()->json(['status'=>'ok', 'code'=>'200','data'=>$userRol,'token'=>$token,'rol'=>$key->rol]);
-          }else{
-              return response()->json(['status'=>'error', 'code'=>'404']);
+          try {
+                //   if (Auth::attempt($credencials)) {
+                    if ($token=JWTAuth::attempt($credencials)) {
+                    //   session(['email'=>$email]);
+                    //   session(['rol'=>'4']);
+                      // return view('admin.home');
+                    //   $userRol=Auth::attempt($credencials);
+                    // $userRol=User::get();
+                    // $userRol=User::where('email',$request->email,'password',$request->password)->get()->where('password',$request->password)->get();
+                    $userRol=User::where('email',$request->email)->get();
+                    foreach($userRol as $key){
+                        // return
+                         $key->rol;
+                    }
+                    // where('password',$request->password)->get();
+                    // $userRol= DB::table('users')
+                    // ->where('email',$request->email)
+                    // ->orWhere(function($query) {
+                    //     $query->where('email',$request->email)
+                    //           ->where('password',$request->password);
+                    // })
+                    // ->get();
+                      return response()->json(['status'=>'ok', 'code'=>'200','user'=>$userRol,'token'=>$token,'rol'=>$key->rol]);
+                  }else{
+                      return response()->json(['status'=>'error', 'code'=>'303', 'mensaje'=>'Clave o usuario invalido']);
+                    }
+                
+            } catch (\Throwable $th) {
+                return response()->json(['status'=>'error', 'code'=>'500']);
             }
 
     }
