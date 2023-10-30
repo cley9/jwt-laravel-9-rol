@@ -60,7 +60,10 @@ class loginController extends Controller
                     //           ->where('password',$request->password);
                     // })
                     // ->get();
-                      return response()->json(['status'=>'ok', 'code'=>'200','user'=>$userRol,'token'=>$token,'rol'=>$key->rol]);
+                    $cookie = cookie('cookie_token', $token, 60 * 24);
+                    return response()->json(['status'=>'ok', 'code'=>'200','user'=>$userRol,'token'=>$token,'rol'=>$key->rol])->withoutCookie($cookie);;
+                    //   return response()->json(['status'=>'ok', 'code'=>'200','user'=>$userRol,'token'=>$token,'rol'=>$key->rol]);
+                    //   return response(["token"=>$token], Response::HTTP_OK)->withoutCookie($cookie);
                   }else{
                       return response()->json(['status'=>'error', 'code'=>'303', 'mensaje'=>'Clave o usuario invalido']);
                     }

@@ -16,3 +16,11 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('/logueo', function(){
+    return view('loginUser');
+})->name('user');
+
+Route::get('/entrar', function () {
+    // fetch('api/user');
+    return view("entrar");
+});

@@ -23,7 +23,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 Route::post('/UserCreate', [loginController::class ,'createUser']);
-Route::post('/UserLogin', [loginController::class ,'loginUser']);
+Route::post('/UserLogin', [loginController::class ,'loginUser'])->name("login.user");
 
 Route::middleware('admin')->group(function () {
             Route::get('/admin', [loginController::class ,'info']);
